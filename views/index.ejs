@@ -14,13 +14,15 @@
             <h3>Our Most Popular Campgrounds</h3>
         </div>
 
-        <% campGrounds.forEach((camp) => { %>
+        <% campgrounds.forEach((campground) => { %>
         <div class="col-sm-6 col-md-3">
             <div class="thumbnail">
-                <img src="<%= camp.image %>" alt="">
+                <img src="<%= campground.image %>" alt="">
                 <div class="caption">
-                    <h4><%= camp.name %></h4>
+                    <h4><%= campground.name %></h4>
                 </div>
+                <p>
+                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary"> More Info </a></p>
             </div>
         </div>
         <% }); %>
