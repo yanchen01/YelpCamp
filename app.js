@@ -2,78 +2,54 @@ const express = require('express'),
 	bodyParser = require('body-parser'),
 	mongoose = require('mongoose'),
 	app = express(),
+	passport = require('passport'),
+	LocalStrategy = require('passport-local'),
+	User = require('./models/user'),
 	Campground = require('./models/campground'),
 	Comment = require('./models/comment'),
 	seedDB = require('./seeds');
 
+// requiring routes
+const commentRoutes = require('./routes/comments'),
+	campgroundRoutes = require('./routes/campground'),
+	indexRoutes = require('./routes/index');
+
+// ------------------------------------------ //
+// 			MONGOOSE CONFIGURATION
+// ------------------------------------------ //
 const Mongo_URI = 'mongodb://localhost/yelp_camp';
 mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
 
-seedDB();
-/* Campground.create(
-	{
-		name: 'Granite Hill',
-		image: 'https://farm1.staticflickr.com/60/215827008_6489cd30c3.jpg',
-		description: 'This is a huge granite hill, no bathrooms. No water. Beautiful granite!'
-	},
-	(err, campground) => {
-		if (err) {
-			console.log(err);
-		} else {
-			console.log('new campground created');
-			console.log(campground);
-		}
-	}
-); */
+// ------------------------------------------ //
+// 			PASSPORT CONFIGURATION
+// ------------------------------------------ //
+app.use(
+	require('express-session')({
+		secret: 'Rusty is the cutest dog!',
+		resave: false,
+		saveUninitialized: false
+	})
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-app.get('/', (req, res) => {
-	res.render('landing');
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user;
+	next();
 });
 
-/*  ********** CAMPGROUNDS ROUTES ********** */
-// INDEX - show all campgrounds
-app.get('/campgrounds', (req, res) => {
-	Campground.find({}, (err, campgrounds) => {
-		if (err) {
-			console.log(err);
-		} else {
-			res.render('index', { campgrounds: campgrounds });
-		}
-	});
-});
-// CREATE - add new campground to database
-app.post('/campgrounds', (req, res) => {
-	const name = req.body.name;
-	const image = req.body.image;
-	const description = req.body.description;
-	const newCampground = { name: name, image: image, description: description };
-	// create a new campground and save to database
-	Campground.create(newCampground, (err, newlyCreated) => {
-		if (err) {
-			console.log(err);
-		} else {
-			// redirect back to campgrounds page
-			res.redirect('/campgrounds');
-		}
-	});
-});
-// NEW - show form to create new campground
-app.get('/campgrounds/new', (req, res) => {
-	res.render('new.ejs');
-});
-// SHOW - shows info about one campground
-app.get('/campgrounds/:id', (req, res) => {
-	Campground.findById(req.params.id).populate('comments').exec((err, foundCampground) => {
-		if (err) {
-			console.log(err);
-		} else {
-			console.log(foundCampground);
-			res.render('show', { campground: foundCampground });
-		}
-	});
-});
+app.use(indexRoutes);
+app.use('/campgrounds', campgroundRoutes);
+app.use('/campgrounds/:id/comments', commentRoutes);
+
+// seedDB(); // seed the detabase 
 
 app.listen(3000, () => {
 	console.log('YelpCamp Server has started on port 3000');

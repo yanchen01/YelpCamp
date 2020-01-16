@@ -30,7 +30,7 @@ function seedDB() {
 			console.log(err);
 		}
 		console.log('removed campgrounds!');
-		Comment.deleteMany({}, function(err) {
+		/* Comment.deleteMany({}, function(err) {
 			if (err) {
 				console.log(err);
 			}
@@ -61,7 +61,7 @@ function seedDB() {
 					}
 				});
 			});
-		});
+		}); */
 	});
 	//add a few comments
 }
