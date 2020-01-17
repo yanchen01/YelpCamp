@@ -19,6 +19,7 @@ const commentRoutes = require('./routes/comments'),
 // ------------------------------------------ //
 // 			MONGOOSE CONFIGURATION
 // ------------------------------------------ //
+require('dotenv').config();
 const Mongo_URI = process.env.ATLAS_URI;
 mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err) => {
 	if (err) {
