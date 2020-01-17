@@ -7,7 +7,8 @@ const express = require('express'),
 	User = require('./models/user'),
 	Campground = require('./models/campground'),
 	Comment = require('./models/comment'),
-	seedDB = require('./seeds');
+	seedDB = require('./seeds'),
+	methodOverride = require('method-override');
 
 // requiring routes
 const commentRoutes = require('./routes/comments'),
@@ -18,11 +19,12 @@ const commentRoutes = require('./routes/comments'),
 // 			MONGOOSE CONFIGURATION
 // ------------------------------------------ //
 const Mongo_URI = 'mongodb://localhost/yelp_camp';
-mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
+app.use(methodOverride('_method'));
 
 // ------------------------------------------ //
 // 			PASSPORT CONFIGURATION
@@ -49,7 +51,7 @@ app.use(indexRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
 
-// seedDB(); // seed the detabase 
+// seedDB(); // seed the detabase
 
 app.listen(3000, () => {
 	console.log('YelpCamp Server has started on port 3000');
