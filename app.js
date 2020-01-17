@@ -22,6 +22,7 @@ const commentRoutes = require('./routes/comments'),
 require('dotenv').config();
 // const Mongo_URI = process.env.ATLAS_URI;
 const Mongo_URI = 'mongodb+srv://ychen:GGoogle0212@yelpcamp-nkqir.mongodb.net/test?retryWrites=true&w=majority';
+
 /* mongoose.connect(Mongo_URI, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
@@ -29,7 +30,24 @@ const Mongo_URI = 'mongodb+srv://ychen:GGoogle0212@yelpcamp-nkqir.mongodb.net/te
 	useFindAndModify: false
 }); */
 
-// Or using promises
+mongoose.connect(
+	Mongo_URI,
+	{
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useUnifiedTopology: true,
+		useFindAndModify: false
+	},
+	function(error) {
+		if (err) {
+			console.log(err.message);
+		} else {
+			console.log('DB Connected!');
+		}
+	}
+);
+
+/* // Or using promises
 mongoose
 	.connect(Mongo_URI, {
 		useNewUrlParser: true,
@@ -44,7 +62,7 @@ mongoose
 		(err) => {
 			console.log('ERROR');
 		}
-	);
+	); */
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
