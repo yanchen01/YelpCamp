@@ -19,8 +19,14 @@ const commentRoutes = require('./routes/comments'),
 // ------------------------------------------ //
 // 			MONGOOSE CONFIGURATION
 // ------------------------------------------ //
-const Mongo_URI = 'mongodb://localhost/yelp_camp';
-mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
+const Mongo_URI = process.env.ATLAS_URI;
+mongoose.connect(Mongo_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err) => {
+	if (err) {
+		console.log(err);
+	} else {
+		console.log('Connected to MongoDB');
+	}
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
