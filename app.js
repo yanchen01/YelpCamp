@@ -99,6 +99,6 @@ app.use('/campgrounds/:id/comments', commentRoutes);
 
 // seedDB(); // seed the detabase
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
 	console.log('YelpCamp Server has started on port 3000');
 });
