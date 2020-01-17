@@ -22,17 +22,17 @@ const commentRoutes = require('./routes/comments'),
 require('dotenv').config();
 // const Mongo_URI = process.env.ATLAS_URI;
 const Mongo_URI = 'mongodb+srv://ychen:GGoogle0212@yelpcamp-nkqir.mongodb.net/test?retryWrites=true&w=majority';
-mongoose.connect(
-	Mongo_URI,
-	{ useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false },
-	function(err) {
-		if (err) {
-			console.log(err);
-		} else {
-			console.log('Connected to MongoDB');
-		}
-	}
-);
+mongoose.connect(Mongo_URI, {
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useUnifiedTopology: true,
+	useFindAndModify: false
+});
+
+const connection = mongoose.connection;
+connection.once('open', () => {
+  console.log("MongoDB database connection established successfully");
+})
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
